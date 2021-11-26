@@ -1,4 +1,21 @@
-import { Form } from "remix";
+import { Form, redirect } from "remix";
+import type { ActionFunction } from "remix";
+import { supabase } from "~/libs/supabase-client";
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData();
+
+  const newWord = {
+    name: formData.get("name"),
+    type: formData.get("type"),
+    sentences: [formData.get("sentence")],
+    definitions: [formData.get("definition")],
+  };
+
+  await supabase.from("words").insert([newWord]);
+
+  return redirect("/");
+};
 
 export default function AddWord() {
   return (
